@@ -1,55 +1,52 @@
-var car, wall, carImg;
-var speed, weight;
-
-function preload(){
-  carImg = loadImage("carImg.jpg");
-}
+var thickness, speed, weight, bullet, wall, damage;
 
 function setup() {
-  createCanvas(1600,400);
-speed=random(55,90)
-weight=random(400,1500)
+  createCanvas(1600, 400);
+  thickness = random(22, 83);
+  bullet = createSprite(100, 200, 30, 15);
+  bullet.shapeColor = color(255, 255, 255);
 
- car=createSprite(50, 200, 50, 50);
-car.velocityX = speed;
-car.addImage(carImg);
-car.scale = 0.3;
-//car.debug = true;
-wall=createSprite(1500,200,60,height/2);
-wall.shapeColor=(80,80,80);
+  wall = createSprite(1200, 200, thickness, height/2)
+  wall.shapeColor = color(80, 80, 80);
+
+  speed= random(223, 321);
+  weight = random(30, 52);
+
+  bullet.velocityX = speed;
 
 }
 
 function draw() {
-  background(220);  
 
-  if(wall.x-car.x <= (car.width+wall.width)/5){
-    car.velocityX=0;
-    var deformation=0.5 * weight * speed* speed/22509;
-    if(deformation>180){
-      car.shapeColor=color(230,230,0);
-      fill("green");
-      textSize(30);
-      text("Very unsafe", 700, 150)
-      text("Deformation : "+Math.round(deformation), 700, 200);
-    }
+  background(0);
+  if(collide(wall, bullet)){
+    bullet.velocityX = 0;
 
-    
-    if(deformation<180 && deformation>100){
-      car.shapeColor=color(230,230,0); 
-      fill("blue");
+    damage = (0.5 * weight * speed * speed) / (thickness**3);
+
+    if(damage > 10){
+      wall.shapeColor = color(255, 0, 0);
+      textStyle("bold");
       textSize(30);
-      text("unsafe", 700, 150)
-      text("Deformation : "+Math.round(deformation) , 700, 200);
-    }
-    
-    if(deformation<100){
-      car.shapeColor=color(0,255,0);
-      fill("red");
+      fill(130, 130, 255);
+      text("Wall is not effective", 700, 150);
+      text("Damage Done : "+Math.round(damage), 700, 200)
+    }if(damage < 10){
+      wall.shapeColor = color(0, 255, 0);
+      textStyle("bold");
       textSize(30);
-      text("safe", 700, 150)
-      text("Deformation : "+Math.round(deformation), 700, 200);
-    }
+      fill(130, 130, 255);
+      text("Wall is effective", 700, 150);
+      text("Damage Done : "+Math.round(damage), 700, 200)
   }
   drawSprites();
+  }
+}
+function collide(o1, o2){
+  if(o1.x - o2.x < (o1.width+o2.width)/ 2){
+    return true;
+  }
+  return false;
+  
+  
 }
